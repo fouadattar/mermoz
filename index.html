@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mermoz — Aviation Advisory by Fouad Attar</title>
+  <meta name="description" content="Strategic aviation advisory from Fouad Attar, former Managing Director of Airbus Middle East. 40 years. 2,000 aircraft. $500 billion in transactions.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --navy: #0A1E3D;
+      --navy-light: #132D54;
+      --blue: #1A6DC2;
+      --blue-light: #4A9AE8;
+      --slate: #5A6E82;
+      --text: #1A2332;
+      --text-light: #4A5568;
+      --white: #FFFFFF;
+      --border: #E2E8F0;
+      --border-dark: #2A3F5A;
+      --bg: #F8FAFC;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      color: var(--text);
+      background: var(--white);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    .container { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1rem 0;
+      transition: background 0.3s, box-shadow 0.3s, padding 0.3s;
+    }
+    .nav.scrolled {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--border);
+      padding: 0.7rem 0;
+    }
+    .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; color: var(--navy); }
+    .nav-logo img { height: 40px; width: auto; mix-blend-mode: multiply; }
+    .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-light); text-decoration: none;
+      font-size: 0.85rem; font-weight: 500; letter-spacing: 0.3px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--navy); }
+    .nav-cta {
+      display: inline-flex; align-items: center;
+      padding: 0.55rem 1.2rem; background: var(--navy); color: var(--white) !important;
+      border-radius: 6px; font-size: 0.82rem; font-weight: 600;
+      letter-spacing: 0.3px; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--navy-light); }
+    .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; }
+    .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--navy); margin: 5px 0; transition: 0.3s; }
+
+    /* ── HERO ── */
+    .hero { padding: 10rem 0 6rem; background: var(--white); }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+      gap: 3rem;
+      align-items: center;
+    }
+    .hero-copy { max-width: 720px; }
+    .hero-label {
+      display: inline-block; font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 1.5rem;
+    }
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.8rem, 5.5vw, 4.2rem); font-weight: 400;
+      line-height: 1.15; color: var(--navy); margin-bottom: 1.5rem;
+    }
+    .hero-subtitle {
+      font-size: clamp(1.05rem, 1.8vw, 1.2rem); color: var(--text-light);
+      line-height: 1.7; max-width: 560px; margin-bottom: 2.5rem;
+    }
+    .hero-actions { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+    .hero-photo-window {
+      position: relative;
+      width: 100%;
+      max-width: 460px;
+      justify-self: end;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 45px rgba(10, 30, 61, 0.14);
+      aspect-ratio: 4 / 5;
+      background: #e5edf7;
+    }
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    .hero-slide.active { opacity: 1; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 1.75rem; background: var(--navy); color: var(--white);
+      text-decoration: none; font-weight: 600; font-size: 0.9rem; border-radius: 6px;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { background: var(--navy-light); transform: translateY(-1px); }
+    .btn-primary svg { width: 16px; height: 16px; }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 1.75rem; background: transparent; color: var(--text);
+      text-decoration: none; font-weight: 600; font-size: 0.9rem;
+      border: 1px solid var(--border); border-radius: 6px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--navy); background: var(--bg); }
+
+    /* ── CREDENTIALS ── */
+    .credentials { padding: 3.5rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg); }
+    .credentials-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+    .credential { text-align: center; }
+    .credential-number {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 3.5vw, 2.8rem); color: var(--navy);
+      line-height: 1.1; margin-bottom: 0.4rem;
+    }
+    .credential-label {
+      font-size: 0.78rem; font-weight: 500; color: var(--slate);
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+
+    /* ── ABOUT ── */
+    .about { padding: 6rem 0; }
+    .about-grid { display: grid; grid-template-columns: 340px 1fr; gap: 4rem; align-items: start; }
+    .about-photo { position: relative; }
+    .about-photo img { width: 100%; border-radius: 10px; aspect-ratio: 4/5; object-fit: cover; }
+    .about-photo-accent {
+      position: absolute; top: -8px; right: -8px; bottom: 8px; left: 8px;
+      border: 2px solid var(--blue); border-radius: 10px; z-index: -1; opacity: 0.3;
+    }
+    .about-label {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--blue); margin-bottom: 1rem;
+    }
+    .about-name {
+      font-family: var(--font-serif); font-size: clamp(2rem, 3vw, 2.6rem);
+      color: var(--navy); margin-bottom: 1.25rem; line-height: 1.2;
+    }
+    .about-text p { color: var(--text-light); line-height: 1.8; margin-bottom: 1rem; font-size: 0.95rem; }
+    .about-text p:last-of-type { margin-bottom: 0; }
+    .about-detail-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.5rem; }
+    .about-tag {
+      padding: 0.35rem 0.9rem; border: 1px solid var(--border); border-radius: 50px;
+      font-size: 0.78rem; font-weight: 500; color: var(--text-light);
+    }
+
+    /* ── SERVICES ── */
+    .services { padding: 6rem 0; background: var(--navy); color: var(--white); }
+    .services-label {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--blue-light); margin-bottom: 1rem;
+    }
+    .services-title {
+      font-family: var(--font-serif); font-size: clamp(2rem, 3vw, 2.6rem);
+      color: var(--white); margin-bottom: 1rem;
+    }
+    .services-subtitle { color: rgba(255,255,255,0.6); max-width: 520px; margin-bottom: 3.5rem; font-size: 0.95rem; line-height: 1.7; }
+    .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .service-card {
+      padding: 2rem; border: 1px solid var(--border-dark); border-radius: 10px;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .service-card:hover { border-color: rgba(74, 154, 232, 0.4); background: rgba(255,255,255,0.03); }
+    .service-icon {
+      width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+      border-radius: 10px; background: rgba(74, 154, 232, 0.1); margin-bottom: 1.25rem;
+    }
+    .service-icon svg { width: 22px; height: 22px; stroke: var(--blue-light); fill: none; stroke-width: 1.5; }
+    .service-name { font-weight: 600; font-size: 1.05rem; margin-bottom: 0.6rem; }
+    .service-desc { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.65; }
+
+    /* ── CAREER ── */
+    .career { padding: 6rem 0; background: var(--bg); }
+    .career-label {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--blue); margin-bottom: 1rem; text-align: center;
+    }
+    .career-title {
+      font-family: var(--font-serif); font-size: clamp(2rem, 3vw, 2.6rem);
+      color: var(--navy); margin-bottom: 3rem; text-align: center;
+    }
+    .timeline { max-width: 680px; margin: 0 auto; position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: ''; position: absolute; left: 0; top: 8px; bottom: 8px;
+      width: 2px; background: var(--border);
+    }
+    .timeline-item { position: relative; padding-bottom: 2.5rem; }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-item::before {
+      content: ''; position: absolute; left: -2rem; top: 8px;
+      width: 10px; height: 10px; background: var(--blue);
+      border-radius: 50%; transform: translateX(-4px);
+    }
+    .timeline-item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+    .timeline-item-header > div { flex: 1; min-width: 0; }
+    .timeline-logo {
+      height: 32px; width: auto; max-width: 110px;
+      object-fit: contain; object-position: right center;
+      opacity: 0.75; flex-shrink: 0; margin-top: 2px;
+    }
+    .timeline-years { font-size: 0.78rem; font-weight: 600; color: var(--blue); letter-spacing: 0.5px; margin-bottom: 0.3rem; }
+    .timeline-role { font-weight: 600; font-size: 1rem; color: var(--navy); margin-bottom: 0.2rem; }
+    .timeline-company { font-size: 0.88rem; color: var(--slate); margin-bottom: 0.5rem; }
+    .timeline-desc { font-size: 0.88rem; color: var(--text-light); line-height: 1.65; }
+
+    /* ── PRESS ── */
+    .press { padding: 5rem 0; border-top: 1px solid var(--border); }
+    .press-label {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--blue); margin-bottom: 2.5rem; text-align: center;
+    }
+    .press-logos { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 3rem; }
+    .press-item { text-decoration: none; color: var(--slate); text-align: center; transition: color 0.2s; }
+    .press-item:hover { color: var(--navy); }
+    .press-name { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.5px; }
+
+    /* ── CONTACT ── */
+    .contact { padding: 6rem 0; background: var(--navy); color: var(--white); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .contact-label {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--blue-light); margin-bottom: 1rem;
+    }
+    .contact-title { font-family: var(--font-serif); font-size: clamp(2rem, 3vw, 2.6rem); margin-bottom: 1rem; }
+    .contact-text { color: rgba(255,255,255,0.6); font-size: 0.95rem; line-height: 1.7; margin-bottom: 2rem; }
+    .contact-methods { display: flex; flex-direction: column; gap: 1.5rem; }
+    .contact-method { display: flex; align-items: center; gap: 1rem; }
+    .contact-method-icon {
+      width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; border: 1px solid var(--border-dark); flex-shrink: 0;
+    }
+    .contact-method-icon svg { width: 18px; height: 18px; stroke: var(--blue-light); fill: none; stroke-width: 1.5; }
+    .contact-method-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 0.15rem; }
+    .contact-method-value { color: var(--white); text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: color 0.2s; }
+    a.contact-method-value:hover { color: var(--blue-light); }
+    .contact-right {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border-dark);
+      border-radius: 12px; padding: 3rem; text-align: center;
+    }
+    .contact-right-title { font-family: var(--font-serif); font-size: 1.6rem; margin-bottom: 0.75rem; }
+    .contact-right-text { color: rgba(255,255,255,0.5); font-size: 0.9rem; line-height: 1.6; margin-bottom: 2rem; }
+    .btn-contact {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem; background: var(--blue); color: var(--white);
+      text-decoration: none; font-weight: 600; font-size: 0.9rem;
+      border-radius: 6px; transition: background 0.2s;
+    }
+    .btn-contact:hover { background: var(--blue-light); }
+
+    /* ── FOOTER ── */
+    .footer { padding: 2rem 0; background: var(--navy); border-top: 1px solid var(--border-dark); }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; }
+    .footer-logo { display: flex; align-items: center; gap: 0.5rem; }
+    .footer-logo svg { height: 20px; width: auto; }
+    .footer-wordmark { font-weight: 700; font-size: 0.85rem; letter-spacing: 2px; color: rgba(255,255,255,0.5); }
+    .footer-text { font-size: 0.78rem; color: rgba(255,255,255,0.35); }
+
+    /* ── ANIMATIONS ── */
+    .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .hero-copy { max-width: 100%; }
+      .hero-photo-window {
+        justify-self: start;
+        max-width: 520px;
+        aspect-ratio: 16 / 10;
+      }
+      .about-grid { grid-template-columns: 280px 1fr; gap: 3rem; }
+      .contact-grid { gap: 3rem; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column; position: absolute;
+        top: 100%; left: 0; right: 0; background: var(--white);
+        padding: 1.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        border-top: 1px solid var(--border); gap: 1rem;
+      }
+      .nav-links.open a { font-size: 1rem; }
+      .nav-toggle { display: block; }
+      .hero { padding: 7rem 0 4rem; }
+      .hero-actions { flex-direction: column; align-items: flex-start; }
+      .hero-photo-window { max-width: 100%; }
+      .credentials-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .about-photo { max-width: 300px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; gap: 0.75rem; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .container { padding: 0 1.25rem; }
+      .hero { padding: 6.5rem 0 3rem; }
+      .credentials-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+      .credential-number { font-size: 1.8rem; }
+      .press-logos { gap: 1.5rem; }
+      .contact-right { padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="container nav-inner">
+      <a href="#" class="nav-logo" aria-label="Mermoz home">
+        <img src="logotype.png" alt="Mermoz logotype" />
+      </a>
+      <button class="nav-toggle" aria-label="Toggle menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#career">Career</a></li>
+        <li><a href="#contact" class="nav-cta">Get in Touch</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-inner fade-up">
+        <div class="hero-copy">
+          <div class="hero-label">Aviation Advisory &middot; Dubai</div>
+          <h1 class="hero-title">Forty years in aerospace.<br>Now working for you.</h1>
+          <p class="hero-subtitle">
+            Fouad Attar spent nearly 15&nbsp;years leading Airbus across the Middle East and Africa, overseeing the sale of 2,000&nbsp;aircraft. Today, he advises airlines, lessors, and investors on the decisions that shape fleets and markets.
+          </p>
+          <div class="hero-actions">
+            <a href="#contact" class="btn-primary">
+              Schedule a Conversation
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="#about" class="btn-secondary">Learn More</a>
+          </div>
+        </div>
+        <div class="hero-photo-window" id="hero-photo-window" aria-label="Rotating aviation photos">
+          <img class="hero-slide active" src="photos/IMG_5001.jpg" alt="Mermoz aviation photo 1" loading="eager">
+          <img class="hero-slide" src="photos/IMG_5002.jpg" alt="Mermoz aviation photo 2" loading="lazy">
+          <img class="hero-slide" src="photos/IMG_5006.JPG" alt="Mermoz aviation photo 3" loading="lazy">
+          <img class="hero-slide" src="photos/IMG_5007.jpg" alt="Mermoz aviation photo 4" loading="lazy">
+          <img class="hero-slide" src="photos/IMG_5009.jpg" alt="Mermoz aviation photo 5" loading="lazy">
+          <img class="hero-slide" src="photos/IMG_5010.PNG" alt="Mermoz aviation photo 6" loading="lazy">
+          <img class="hero-slide" src="photos/IMG_5012.PNG" alt="Mermoz aviation photo 7" loading="lazy">
+          <img class="hero-slide" src="photos/IMG_5013.PNG" alt="Mermoz aviation photo 8" loading="lazy">
+          <img class="hero-slide" src="photos/IMG_5014.PNG" alt="Mermoz aviation photo 9" loading="lazy">
+          <img class="hero-slide" src="photos/IMG_5016.jpg" alt="Mermoz aviation photo 10" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CREDENTIALS -->
+  <section class="credentials">
+    <div class="container">
+      <div class="credentials-grid">
+        <div class="credential fade-up">
+          <div class="credential-number">40+</div>
+          <div class="credential-label">Years in Aviation</div>
+        </div>
+        <div class="credential fade-up">
+          <div class="credential-number">2,000</div>
+          <div class="credential-label">Aircraft Transactions</div>
+        </div>
+        <div class="credential fade-up">
+          <div class="credential-number">$500B</div>
+          <div class="credential-label">Transaction Value</div>
+        </div>
+        <div class="credential fade-up">
+          <div class="credential-number">35</div>
+          <div class="credential-label">Countries Served</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-photo fade-up">
+          <img src="https://www.afg.aero/wp-content/uploads/2024/04/Fouad-Attar.png" alt="Fouad Attar" loading="lazy">
+          <div class="about-photo-accent"></div>
+        </div>
+        <div class="fade-up">
+          <div class="about-label">About</div>
+          <h2 class="about-name">Fouad Attar</h2>
+          <div class="about-text">
+            <p>
+              Fouad Attar is a career aerospace executive with four decades of experience spanning engineering, airline operations, and commercial aviation at the highest level.
+            </p>
+            <p>
+              As Managing Director of Airbus Middle East, he led all commercial activity across 35&nbsp;countries for nearly 15&nbsp;years&mdash;managing sales, customer relationships, and market strategy for a region that became one of Airbus's most important growth markets.
+            </p>
+            <p>
+              Before Airbus, Fouad held senior leadership roles at Air France Industries, EADS Sogerma, and Royal Air Maroc, building deep operational knowledge across MRO, engineering, and fleet management.
+            </p>
+            <p>
+              He founded Mermoz Aviation Consulting in 2020, and in 2024 was appointed Senior Adviser to the Board at Aircraft Finance Germany (AFG).
+            </p>
+          </div>
+          <div class="about-detail-row">
+            <span class="about-tag">Sup'A&eacute;ro &mdash; MSc Aeronautical Engineering</span>
+          </div>
+          <div class="about-detail-row">
+            <span class="about-tag">English</span>
+            <span class="about-tag">French</span>
+            <span class="about-tag">Arabic</span>
+            <span class="about-tag">German</span>
+            <span class="about-tag">Spanish</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services" id="services">
+    <div class="container">
+      <div class="services-label fade-up">Services</div>
+      <h2 class="services-title fade-up">How Mermoz works with clients</h2>
+      <p class="services-subtitle fade-up">
+        Engagements are direct and confidential. Fouad works personally with principals&mdash;no associates, no layers.
+      </p>
+      <div class="services-grid">
+        <div class="service-card fade-up">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3 class="service-name">Strategic Advisory</h3>
+          <p class="service-desc">Board-level guidance on fleet strategy, market positioning, and commercial priorities for airlines, lessors, and OEMs.</p>
+        </div>
+        <div class="service-card fade-up">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 class="service-name">Transaction Support</h3>
+          <p class="service-desc">Hands-on support through aircraft acquisitions, leasing negotiations, and deal structuring&mdash;from letter of intent to delivery.</p>
+        </div>
+        <div class="service-card fade-up">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+          <h3 class="service-name">Market Intelligence</h3>
+          <p class="service-desc">On-the-ground insight across the Middle East and Africa. De-risk expansion plans with knowledge built over decades of relationships.</p>
+        </div>
+        <div class="service-card fade-up">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3 class="service-name">Business Development</h3>
+          <p class="service-desc">Introductions and partnership strategies that open qualified opportunities in markets where access and trust are everything.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAREER -->
+  <section class="career" id="career">
+    <div class="container">
+      <div class="career-label fade-up">Career</div>
+      <h2 class="career-title fade-up">Professional History</h2>
+      <div class="timeline">
+        <div class="timeline-item fade-up">
+          <div class="timeline-item-header">
+            <div>
+              <div class="timeline-years">2024 &mdash; Present</div>
+              <div class="timeline-role">Senior Adviser to the Board</div>
+              <div class="timeline-company">Aircraft Finance Germany (AFG)</div>
+            </div>
+            <img class="timeline-logo" src="https://logo.clearbit.com/afg.aero" alt="AFG logo" loading="lazy">
+          </div>
+          <div class="timeline-desc">Strategic advisory on commercial, freighter, and business aviation finance.</div>
+        </div>
+        <div class="timeline-item fade-up">
+          <div class="timeline-item-header">
+            <div>
+              <div class="timeline-years">2020 &mdash; Present</div>
+              <div class="timeline-role">Founder &amp; Principal</div>
+              <div class="timeline-company">Mermoz Aviation Consulting &amp; Services, Dubai</div>
+            </div>
+            <img class="timeline-logo" src="mermoz.png" alt="Mermoz logo" loading="lazy" style="mix-blend-mode:multiply;">
+          </div>
+          <div class="timeline-desc">Independent advisory serving airlines, lessors, OEMs, and investors worldwide.</div>
+        </div>
+        <div class="timeline-item fade-up">
+          <div class="timeline-item-header">
+            <div>
+              <div class="timeline-years">2006 &mdash; 2020</div>
+              <div class="timeline-role">Managing Director, Airbus Middle East</div>
+              <div class="timeline-company">Airbus, Dubai</div>
+            </div>
+            <img class="timeline-logo" src="https://logo.clearbit.com/airbus.com" alt="Airbus logo" loading="lazy">
+          </div>
+          <div class="timeline-desc">Led all commercial activity across 35 countries in the Middle East and Northern Africa. Oversaw the sale of approximately 2,000 aircraft valued at ~$500B.</div>
+        </div>
+        <div class="timeline-item fade-up">
+          <div class="timeline-item-header">
+            <div>
+              <div class="timeline-years">2001 &mdash; 2006</div>
+              <div class="timeline-role">Worldwide VP Marketing &amp; Sales</div>
+              <div class="timeline-company">Air France Industries &amp; EADS Sogerma</div>
+            </div>
+            <img class="timeline-logo" src="https://logo.clearbit.com/airfranceindustries.com" alt="Air France Industries logo" loading="lazy">
+          </div>
+          <div class="timeline-desc">Led global MRO marketing and business development before transitioning to Airbus.</div>
+        </div>
+        <div class="timeline-item fade-up">
+          <div class="timeline-item-header">
+            <div>
+              <div class="timeline-years">1988 &mdash; 2001</div>
+              <div class="timeline-role">Head of Engineering</div>
+              <div class="timeline-company">Royal Air Maroc</div>
+            </div>
+            <img class="timeline-logo" src="https://logo.clearbit.com/royalairmaroc.com" alt="Royal Air Maroc logo" loading="lazy">
+          </div>
+          <div class="timeline-desc">Senior engineering and management positions at Morocco's flag carrier for 13 years.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRESS -->
+  <section class="press">
+    <div class="container">
+      <div class="press-label fade-up">Featured In</div>
+      <div class="press-logos fade-up">
+        <a href="https://airbus.com/en/newsroom/news/2016-03-airbus-middle-east-serving-operators-in-a-dynamic-air-transport-market" target="_blank" rel="noopener" class="press-item"><div class="press-name">Airbus</div></a>
+        <a href="https://www.bbc.com/news/business-35434483" target="_blank" rel="noopener" class="press-item"><div class="press-name">BBC News</div></a>
+        <a href="https://www.afg.aero/news/afg-aviation-ireland-limited-afg-announces-the-appointment-of-mr-fouad-attar-as-senior-advisor-to-the-board/" target="_blank" rel="noopener" class="press-item"><div class="press-name">AFG Aviation</div></a>
+        <a href="https://www.aeronautique.ma/Fouad-ATTAR-Airbus-Middle-East-Il-y-a-un-gros-potentiel-en-Afrique-du-Nord_a1952.html" target="_blank" rel="noopener" class="press-item"><div class="press-name">Aeronautique.ma</div></a>
+        <a href="https://www.akhirsaa.com/24399" target="_blank" rel="noopener" class="press-item"><div class="press-name">Akhir Saa</div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="fade-up">
+          <div class="contact-label">Contact</div>
+          <h2 class="contact-title">Let's talk.</h2>
+          <p class="contact-text">
+            Whether you're evaluating a fleet decision, entering a new market, or looking for a seasoned perspective on an aerospace investment&mdash;a conversation is always the best starting point.
+          </p>
+          <div class="contact-methods">
+            <div class="contact-method">
+              <div class="contact-method-icon">
+                <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div>
+                <div class="contact-method-label">Email</div>
+                <a href="mailto:contact@mermoz.aero" class="contact-method-value">contact@mermoz.aero</a>
+              </div>
+            </div>
+            <div class="contact-method">
+              <div class="contact-method-icon">
+                <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </div>
+              <div>
+                <div class="contact-method-label">Phone</div>
+                <a href="tel:+971504685719" class="contact-method-value">+971 50 468 5719</a>
+              </div>
+            </div>
+            <div class="contact-method">
+              <div class="contact-method-icon">
+                <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div>
+                <div class="contact-method-label">Location</div>
+                <span class="contact-method-value">DAFZA, Dubai, UAE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="contact-right fade-up">
+          <h3 class="contact-right-title">Confidential consultation</h3>
+          <p class="contact-right-text">
+            All discussions are held under strict confidentiality. Reach out to arrange a preliminary conversation at your convenience.
+          </p>
+          <a href="mailto:contact@mermoz.aero" class="btn-contact">
+            Send an Email
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-logo">
+        <img src="mermoz.png" alt="Mermoz wing logo" style="height:32px;width:auto;filter:brightness(0) invert(1);opacity:0.75;" />
+        <span class="footer-wordmark">MERMOZ</span>
+      </div>
+      <div class="footer-text">&copy; 2026 Mermoz Aviation Consulting &amp; Services. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script>
+    // Nav scroll state
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
+
+    // Fade-in on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Hero slideshow (4 seconds per image)
+    const heroSlides = document.querySelectorAll('#hero-photo-window .hero-slide');
+    let heroSlideIndex = 0;
+    if (heroSlides.length > 1) {
+      setInterval(() => {
+        heroSlides[heroSlideIndex].classList.remove('active');
+        heroSlideIndex = (heroSlideIndex + 1) % heroSlides.length;
+        heroSlides[heroSlideIndex].classList.add('active');
+      }, 4000);
+    }
+
+    // Close mobile nav on link click
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.addEventListener('click', () => document.querySelector('.nav-links').classList.remove('open'));
+    });
+  </script>
+
+</body>
+</html>

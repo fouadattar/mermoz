@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 180" role="img" aria-label="Mermoz logo monoline plane">
+  <rect width="640" height="180" fill="none"/>
+  <g transform="translate(26 30)" fill="none" stroke="#0A2A55" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 78 L130 30 L88 120 L70 88 L35 80 Z"/>
+    <path d="M35 80 L86 86" stroke="#21B7E8"/>
+  </g>
+  <text x="190" y="90" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="700" letter-spacing="3" fill="#0A2A55">MERMOZ</text>
+  <text x="194" y="122" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="500" letter-spacing="2" fill="#4A678B">AVIATION CONSULTING</text>
+</svg>
